@@ -1,0 +1,24 @@
+.git
+.gitignore
+.dockerignore
+Dockerfile
+.claude
+.cursor
+.vscode
+.idea
+
+**/__pycache__
+**/*.py[cod]
+**/.pytest_cache
+.venv
+venv
+.env
+.env.*
+
+# Runtime data: never bake the signing key into the image
+mvp/data
+
+sagarakshak-standalone.html
+**/*.log
+.DS_Store
+Thumbs.db

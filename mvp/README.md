@@ -12,6 +12,16 @@ warning from a signed safety packet. Catch reports flow back and score the advis
 cd mvp
 python server.py            # Python 3.10+, standard library only — no pip install
 ```
+Or with Docker, from the repository root (works on x86 and ARM, including Apple Silicon):
+
+```
+docker build -t sagarakshak .
+docker run -p 8000:8000 -v sagarakshak-data:/app/data sagarakshak
+```
+The volume keeps the signing key and catch reports across restarts. In the container,
+server-side Tamil speech (`/api/tts`) is unavailable because it needs Windows; the browser's
+own voices still work.
+
 Open http://localhost:8000. Signature checks in the browser need a recent Chrome, Edge,
 Firefox or Safari (WebCrypto Ed25519).
 
