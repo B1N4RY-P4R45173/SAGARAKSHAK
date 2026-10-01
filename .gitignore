@@ -1,0 +1,47 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+build/
+dist/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Virtual environments
+.venv/
+venv/
+env/
+.env
+.env.*
+
+# Runtime data (signing key, catch reports) - generated on first run
+mvp/data/
+*.bin
+*.key
+*.pem
+
+# Logs
+*.log
+
+# Editors / IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Tool-local settings
+.claude/
+.cursor/
+.aider*
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+ehthumbs.db

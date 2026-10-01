@@ -1,0 +1,1107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>[hidden]{display:none!important}</style>
+</head>
+<body>
+<title>Sagarakshak Prototype</title>
+<meta name="description" content="Interaction prototype of an agentic marine-intelligence assistant for Indian fishers. All data simulated.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Noto+Sans+Tamil:wght@400;600&display=swap">
+<style>
+/* ---------- tokens: dark-first (sea-ink) ---------- */
+:root{
+  color-scheme: dark;
+  --bg:#06131c; --panel:#0b1d29; --raise:#10283a; --sunk:#081822;
+  --line:#1b3749; --line2:#2a5068;
+  --text:#d9e8ee; --muted:#88a4b2; --faint:#5a7b8c;
+  --teal:#35d6c4; --teal-ink:#03201d; --teal-soft:rgba(53,214,196,.13); --teal-line:rgba(53,214,196,.45);
+  --amber:#f1b440; --amber-soft:rgba(241,180,64,.14); --amber-line:rgba(241,180,64,.5);
+  --coral:#ff6f61; --coral-soft:rgba(255,111,97,.12); --coral-line:rgba(255,111,97,.55);
+  --sea:#0a2131; --sea2:#0c2638; --land:#1a2d2b; --land-line:#2e4a46; --land-text:#7d9690;
+  --grid:rgba(136,164,178,.13);
+  --bezel:#02090e; --bezel-line:#1d3342;
+  --shadow:0 18px 50px -20px rgba(0,0,0,.7);
+  --f-head:"Archivo", "Arial Narrow", system-ui, sans-serif;
+  --f-body:"IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono:"IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+  --f-ta:"Noto Sans Tamil", "Latha", "Nirmala UI", "IBM Plex Sans", sans-serif;
+}
+@media (prefers-color-scheme: light){
+  :root:not([data-theme="dark"]){
+    color-scheme: light;
+    --bg:#e8eff2; --panel:#ffffff; --raise:#f2f7f9; --sunk:#eaf1f4;
+    --line:#d0dde3; --line2:#aec3cc;
+    --text:#0b212e; --muted:#48677a; --faint:#7b95a3;
+    --teal:#0a8a7e; --teal-ink:#ffffff; --teal-soft:rgba(10,138,126,.10); --teal-line:rgba(10,138,126,.45);
+    --amber:#9a6200; --amber-soft:rgba(214,146,20,.13); --amber-line:rgba(170,110,0,.5);
+    --coral:#c8372b; --coral-soft:rgba(214,70,55,.09); --coral-line:rgba(200,55,43,.5);
+    --sea:#d7e8ef; --sea2:#cfe3eb; --land:#ece6d7; --land-line:#cfc5ab; --land-text:#7a6f55;
+    --grid:rgba(40,80,100,.12);
+    --bezel:#0d1b24; --bezel-line:#27404f;
+    --shadow:0 18px 44px -24px rgba(10,40,60,.45);
+  }
+}
+:root[data-theme="light"]{
+  color-scheme: light;
+  --bg:#e8eff2; --panel:#ffffff; --raise:#f2f7f9; --sunk:#eaf1f4;
+  --line:#d0dde3; --line2:#aec3cc;
+  --text:#0b212e; --muted:#48677a; --faint:#7b95a3;
+  --teal:#0a8a7e; --teal-ink:#ffffff; --teal-soft:rgba(10,138,126,.10); --teal-line:rgba(10,138,126,.45);
+  --amber:#9a6200; --amber-soft:rgba(214,146,20,.13); --amber-line:rgba(170,110,0,.5);
+  --coral:#c8372b; --coral-soft:rgba(214,70,55,.09); --coral-line:rgba(200,55,43,.5);
+  --sea:#d7e8ef; --sea2:#cfe3eb; --land:#ece6d7; --land-line:#cfc5ab; --land-text:#7a6f55;
+  --grid:rgba(40,80,100,.12);
+  --bezel:#0d1b24; --bezel-line:#27404f;
+  --shadow:0 18px 44px -24px rgba(10,40,60,.45);
+}
+
+*{box-sizing:border-box}
+html,body{background:var(--bg)}
+body{margin:0;color:var(--text);font-family:var(--f-body);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+.num,.mono{font-variant-numeric:tabular-nums}
+.mono{font-family:var(--f-mono)}
+.ta{font-family:var(--f-ta)}
+h1,h2,h3{font-family:var(--f-head);text-wrap:balance;margin:0}
+
+/* ---------- header ---------- */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.top-in{max-width:1320px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;gap:14px 20px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:12px;min-width:0}
+.mark{width:34px;height:34px;flex:none}
+.brand h1{font-size:19px;font-weight:800;letter-spacing:.14em}
+.brand p{margin:0;color:var(--muted);font-size:12px}
+.proto{display:inline-flex;align-items:center;gap:8px;padding:6px 11px;border:1px solid var(--amber-line);background:var(--amber-soft);color:var(--amber);border-radius:4px;font-family:var(--f-head);font-weight:700;font-size:11.5px;letter-spacing:.12em;white-space:nowrap}
+.proto::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--amber)}
+.top-ctl{margin-left:auto;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.switch{display:inline-flex;align-items:center;gap:9px;cursor:pointer;padding:6px 10px 6px 6px;border:1px solid var(--line);border-radius:999px;background:var(--panel);font-size:12.5px;font-weight:500;user-select:none}
+.switch input{position:absolute;opacity:0;width:1px;height:1px}
+.track{width:34px;height:20px;border-radius:999px;background:var(--line2);position:relative;transition:background .2s}
+.track::after{content:"";position:absolute;top:3px;left:3px;width:14px;height:14px;border-radius:50%;background:var(--text);transition:transform .2s}
+.switch input:checked + .track{background:var(--amber)}
+.switch input:checked + .track::after{transform:translateX(14px);background:var(--bg)}
+.switch input:focus-visible + .track{outline:2px solid var(--teal);outline-offset:2px}
+.ghost{border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:6px 12px;font-size:12.5px;cursor:pointer}
+.ghost:hover{border-color:var(--line2)}
+
+/* ---------- layout ---------- */
+.wrap{max-width:1320px;margin:0 auto;padding-inline:20px;padding-block:22px 36px}
+.grid{display:grid;grid-template-columns:minmax(0,400px) minmax(0,1fr);gap:24px;align-items:start}
+.right{display:grid;gap:20px;min-width:0}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;min-width:0}
+.card-h{display:flex;align-items:baseline;justify-content:space-between;gap:8px 14px;flex-wrap:wrap;padding:14px 16px 10px}
+.card-h h2{font-size:15px;font-weight:700;letter-spacing:.02em}
+.eyebrow{font-family:var(--f-head);font-size:10.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.src{color:var(--faint);font-size:11.5px}
+.offbar{display:flex;gap:10px;align-items:center;padding:10px 14px;border:1px solid var(--teal-line);background:var(--teal-soft);border-radius:8px;font-size:13px}
+
+/* ---------- phone ---------- */
+.phone-wrap{position:sticky;top:84px}
+.phone{background:var(--bezel);border:1px solid var(--bezel-line);border-radius:38px;padding:9px;box-shadow:var(--shadow);width:100%;max-width:400px;margin-inline:auto}
+.screen{background:var(--bg);border-radius:30px;overflow:hidden;height:min(780px,calc(100vh - 120px));min-height:600px;display:flex;flex-direction:column;position:relative}
+.status{display:flex;justify-content:space-between;align-items:center;padding:10px 22px 4px;font-size:11.5px;font-weight:600}
+.status .sig{display:flex;align-items:center;gap:6px;color:var(--muted);font-weight:500}
+.sig i{width:7px;height:7px;border-radius:50%;background:var(--teal);display:inline-block}
+body.offline .sig i{background:var(--amber)}
+.apphead{display:flex;align-items:center;justify-content:space-between;padding:6px 16px 10px;border-bottom:1px solid var(--line)}
+.apphead b{font-family:var(--f-head);font-weight:800;letter-spacing:.12em;font-size:13px}
+.lang{font-size:11.5px;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:2px 9px}
+.packet{margin:10px 12px 0;padding:9px 11px;border:1px solid var(--teal-line);background:var(--teal-soft);border-radius:10px;display:grid;grid-template-columns:auto 1fr;gap:2px 9px;align-items:center;font-size:12px}
+.packet svg{grid-row:span 2}
+.packet strong{font-weight:600}
+.packet span{color:var(--muted);font-size:11px}
+.chat{flex:1;overflow-y:auto;padding:12px 12px 16px;display:flex;flex-direction:column;gap:10px;scroll-behavior:smooth}
+.sysline{align-self:center;font-size:11px;color:var(--faint);padding:2px 10px;border:1px dashed var(--line);border-radius:999px}
+.bubble{align-self:flex-end;max-width:84%;background:var(--raise);border:1px solid var(--line);border-radius:14px 14px 4px 14px;padding:8px 12px}
+.bubble .ta{display:block;font-size:14.5px;line-height:1.45}
+.bubble .en{display:block;color:var(--muted);font-size:11.5px}
+
+/* agent trace */
+.trace{border:1px solid var(--line);border-radius:10px;background:var(--sunk);font-size:12px}
+.trace-h{display:flex;align-items:center;gap:8px;padding:8px 10px}
+.trace-h .t{flex:1;min-width:0;color:var(--muted)}
+.trace-h .t b{color:var(--text);font-weight:600}
+.tbtn{border:1px solid var(--line);background:transparent;border-radius:6px;padding:2px 8px;font-size:11px;cursor:pointer;color:var(--muted)}
+.tbtn:hover{color:var(--text);border-color:var(--line2)}
+.agents{list-style:none;margin:0;padding:0 10px 4px 22px;position:relative}
+.agents::before{content:"";position:absolute;left:14px;top:0;bottom:14px;border-left:1px solid var(--line2)}
+.agent{position:relative;padding:5px 0 5px 12px;display:grid;grid-template-columns:auto 1fr;gap:1px 8px;align-items:start}
+.agent::before{content:"";position:absolute;left:-8px;top:13px;width:14px;border-top:1px solid var(--line2)}
+.agent .st{width:14px;height:14px;margin-top:2px;border-radius:50%;border:1.5px solid var(--line2);display:grid;place-items:center}
+.agent .nm{font-weight:600;font-size:12px}
+.agent .nm small{font-weight:400;color:var(--faint);font-size:10.5px;margin-left:4px}
+.agent .cl,.agent .vl{grid-column:2}
+.agent .cl{color:var(--text)}
+.agent .vl{font-family:var(--f-mono);font-size:10.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+.agent.run .st{border-color:var(--teal);border-top-color:transparent;animation:spin .7s linear infinite}
+.agent.run .cl,.agent.run .vl{color:var(--faint)}
+.agent.done .st{background:var(--teal);border-color:var(--teal)}
+.agent.done .st::after{content:"";width:5px;height:3px;border-left:1.5px solid var(--teal-ink);border-bottom:1.5px solid var(--teal-ink);transform:rotate(-45deg) translate(0,-1px)}
+.agent.warn .st{background:var(--coral);border-color:var(--coral)}
+.agent.off{opacity:.45}
+.agent.off .st{border-style:dashed}
+.verifier{margin:2px 10px 10px;padding:7px 9px;border-radius:7px;border:1px solid var(--line);display:flex;gap:8px;align-items:center}
+.verifier .vi{width:16px;height:16px;flex:none}
+.verifier.run{color:var(--muted)}
+.verifier.pass{border-color:var(--teal-line);color:var(--teal)}
+.verifier.fail{border-color:var(--coral-line);color:var(--coral);background:var(--coral-soft)}
+.trace.collapsed .agents,.trace.collapsed .verifier{display:none}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* answer card */
+.ans{border:1px solid var(--line);background:var(--panel);border-radius:12px;padding:11px 12px 12px;display:grid;gap:8px;transition:box-shadow .2s,border-color .2s}
+.ans.active{border-color:var(--line2);box-shadow:0 0 0 1px var(--line2)}
+.ans-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:11px;color:var(--muted)}
+.chip{display:inline-flex;align-items:center;gap:5px;font-family:var(--f-head);font-weight:700;font-size:10.5px;letter-spacing:.1em;padding:2px 7px;border-radius:4px;border:1px solid}
+.chip.ok{color:var(--teal);border-color:var(--teal-line);background:var(--teal-soft)}
+.chip.warn{color:var(--amber);border-color:var(--amber-line);background:var(--amber-soft)}
+.chip.crit,.chip.refuse{color:var(--coral);border-color:var(--coral-line);background:var(--coral-soft)}
+.ans .head-ta{font-family:var(--f-ta);font-size:16px;font-weight:600;line-height:1.45}
+.ans .head-en{font-family:var(--f-head);font-size:14px;font-weight:600;margin-top:-4px}
+.claims{margin:0;padding:0;list-style:none;display:grid;gap:6px}
+.claims li{padding-left:12px;position:relative;font-size:13px}
+.claims li::before{content:"";position:absolute;left:0;top:.62em;width:5px;height:5px;background:var(--line2);border-radius:1px}
+.cite{border:1px solid var(--teal-line);color:var(--teal);background:transparent;border-radius:4px;font-family:var(--f-mono);font-size:10px;padding:0 4px;margin-left:3px;cursor:pointer;vertical-align:1px;line-height:1.5}
+.cite:hover{background:var(--teal-soft)}
+.ans .src{margin-top:2px}
+.ans.refuse{border-color:var(--coral-line);background:linear-gradient(var(--coral-soft),var(--coral-soft)),var(--panel)}
+.ans.refuse .head-ta,.ans.refuse .head-en{color:var(--coral)}
+.miss{list-style:none;margin:0;padding:0;display:grid;gap:7px;font-size:12.5px}
+.miss li{display:grid;grid-template-columns:18px 1fr;gap:6px}
+.miss .x{color:var(--coral);font-weight:700}
+.miss .y{color:var(--teal);font-weight:700}
+.note{font-size:12px;color:var(--muted);border-top:1px dashed var(--line);padding-top:8px}
+.linkbtn{border:0;background:none;padding:0;color:var(--teal);text-decoration:underline;text-underline-offset:2px;cursor:pointer;font-size:12px}
+.live{transition:background .4s}
+.live.flash{background:var(--amber-soft)}
+
+/* wave strip + causal bars + meter */
+.minichart{width:100%;height:auto;display:block}
+.minichart text{font-family:var(--f-mono);font-size:10px;fill:var(--muted)}
+.minichart .bar{fill:var(--teal)}
+.minichart .bar.hi{fill:var(--amber)}
+.minichart .thr{stroke:var(--amber);stroke-dasharray:3 3;stroke-width:1}
+.minichart .axis{stroke:var(--line2)}
+.chain{display:grid;gap:7px}
+.factor{display:grid;grid-template-columns:14px 1fr auto;gap:2px 8px;align-items:center;font-size:12.5px}
+.factor .rk{font-family:var(--f-mono);color:var(--faint);font-size:11px}
+.factor .fbar{grid-column:2 / 4;height:7px;background:var(--sunk);border-radius:2px;overflow:hidden}
+.factor .fbar i{display:block;height:100%;background:var(--teal);border-radius:2px}
+.factor.med .fbar i{background:color-mix(in srgb,var(--teal) 62%,var(--sunk))}
+.factor.low .fbar i{background:color-mix(in srgb,var(--teal) 35%,var(--sunk))}
+.factor .w{font-family:var(--f-mono);font-size:11.5px;font-variant-numeric:tabular-nums}
+.conf{font-size:10px;color:var(--muted);border:1px solid var(--line);border-radius:3px;padding:0 4px;margin-left:5px;white-space:nowrap}
+.mech{font-size:12px;color:var(--muted);background:var(--sunk);border-radius:7px;padding:7px 9px}
+.meter{border:1px solid var(--line);border-radius:9px;padding:9px 10px;display:grid;gap:6px}
+.meter-row{display:flex;justify-content:space-between;align-items:baseline;font-size:12px;color:var(--muted)}
+.meter-row b{font-family:var(--f-head);font-size:20px;color:var(--text);font-variant-numeric:tabular-nums}
+.meter-bar{height:6px;border-radius:3px;background:var(--sunk);overflow:hidden}
+.meter-bar i{display:block;height:100%;background:var(--teal);transition:width 1.1s cubic-bezier(.2,.8,.2,1)}
+.meter .cap{font-size:12px;color:var(--teal)}
+.logrow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:12px;color:var(--muted)}
+.btn{border:1px solid var(--teal);background:var(--teal);color:var(--teal-ink);border-radius:7px;padding:6px 12px;font-weight:600;font-size:12.5px;cursor:pointer}
+.btn:disabled{cursor:default}
+.btn.done{background:transparent;color:var(--teal)}
+body.offline .needs-net{opacity:.38;filter:grayscale(1);pointer-events:none}
+.netnote{display:none;font-size:11px;color:var(--amber)}
+body.offline .netnote{display:block}
+
+/* presets */
+.presets{border-top:1px solid var(--line);padding:9px 0 12px;background:var(--panel)}
+.presets .eyebrow{padding:0 14px 7px;display:flex;justify-content:space-between}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:0 12px 4px;scroll-snap-type:x mandatory;scrollbar-width:thin}
+.qchip{flex:none;scroll-snap-align:start;text-align:left;border:1px solid var(--line2);background:var(--raise);border-radius:12px;padding:7px 11px;cursor:pointer;max-width:220px;display:grid;gap:1px}
+.qchip:hover:not(:disabled){border-color:var(--teal)}
+.qchip .ta{font-size:13.5px;line-height:1.4}
+.qchip .en{font-size:11px;color:var(--muted)}
+.qchip .tag{display:none;font-size:10px;color:var(--amber);font-weight:600;letter-spacing:.04em}
+.qchip:disabled{opacity:.4;cursor:default}
+body.offline .qchip.net .tag{display:block}
+
+/* map */
+.map-box{padding:0 12px}
+#map{width:100%;height:auto;display:block;border-radius:8px;border:1px solid var(--line);background:var(--sea)}
+#map text{font-family:var(--f-body)}
+.m-sea{fill:var(--sea)}
+.m-grid{stroke:var(--grid);stroke-width:1}
+.m-gridlbl{fill:var(--faint);font-size:10px;font-family:var(--f-mono)!important}
+.m-land{fill:var(--land);stroke:var(--land-line);stroke-width:1}
+.m-landlbl{fill:var(--land-text);font-size:11px;font-weight:500}
+.m-sealbl{fill:var(--faint);font-size:10px;letter-spacing:.2em;font-weight:600}
+.m-shoal{fill:var(--land);stroke:var(--land-line)}
+.m-imbl{stroke:var(--coral);stroke-width:2;stroke-dasharray:9 6;fill:none}
+.m-imbllbl{fill:var(--coral);font-size:10.5px;font-weight:600;letter-spacing:.06em}
+.m-lk{fill:var(--coral);opacity:.035}
+.m-pfz{fill:var(--teal);fill-opacity:.14;stroke:var(--teal);stroke-width:1.2;stroke-dasharray:4 3}
+.m-pfz.caution{fill:var(--amber);stroke:var(--amber)}
+.m-pfzlbl{fill:var(--teal);font-size:10.5px;font-weight:600;font-family:var(--f-mono)!important}
+.m-pfzlbl.caution{fill:var(--amber)}
+.q-fish .pfz2{fill-opacity:.32;stroke-width:2;stroke-dasharray:none}
+.m-rec{fill:var(--teal);font-size:9.5px;font-weight:600;letter-spacing:.08em;opacity:0}
+.q-fish .m-rec{opacity:1}
+.m-cached{fill:var(--amber);font-size:9.5px;font-weight:600;opacity:0}
+body.offline .m-cached{opacity:1}
+body.offline .pfzs{opacity:.5}
+.m-cur{stroke:var(--faint);stroke-width:1.1;fill:none}
+.m-curhead{fill:var(--faint)}
+.m-cone{fill:var(--amber);fill-opacity:.2;stroke:var(--amber);stroke-width:1.2}
+.m-cone-lk{fill:var(--coral);fill-opacity:.45;stroke:none}
+.m-iso{stroke:var(--amber);stroke-width:1;stroke-dasharray:2 3;fill:none;opacity:.9}
+.m-isolbl{fill:var(--amber);font-size:9.5px;font-family:var(--f-mono)!important}
+.m-center{stroke:var(--amber);stroke-width:1;stroke-dasharray:1 3}
+.m-dist{stroke:var(--text);stroke-width:1;stroke-dasharray:2 3;opacity:.7}
+.m-distlbl{fill:var(--text);font-size:10.5px;font-family:var(--f-mono)!important;font-weight:500}
+.m-hdg{stroke:var(--teal);stroke-width:2.4;fill:none}
+.m-hdghead{fill:var(--teal)}
+.m-hdglbl{fill:var(--teal);font-size:10.5px;font-weight:600;font-family:var(--f-mono)!important}
+.m-boat{fill:var(--text);stroke:var(--bg);stroke-width:1.5}
+.m-ring{fill:none;stroke:var(--text);stroke-width:1;opacity:.5;transform-box:fill-box;transform-origin:center;animation:ping 2.4s ease-out infinite}
+.m-boatlbl{fill:var(--text);font-size:10.5px;font-weight:600}
+.m-halo{paint-order:stroke;stroke:var(--sea);stroke-width:3px;stroke-linejoin:round}
+.m-offchart{opacity:0;transition:opacity .3s}
+.q-refuse .m-offchart{opacity:1}
+.m-offchart rect{fill:var(--panel);stroke:var(--coral-line)}
+.m-offchart text{fill:var(--coral);font-size:10.5px;font-weight:600}
+.m-scale{stroke:var(--text);stroke-width:1.5}
+.m-scalelbl{fill:var(--muted);font-size:10px;font-family:var(--f-mono)!important}
+@keyframes ping{0%{transform:scale(.6);opacity:.8}100%{transform:scale(2.2);opacity:0}}
+
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:11.5px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.lg{width:16px;height:10px;display:inline-block;border-radius:2px}
+.lg.pfz{background:var(--teal-soft);border:1px dashed var(--teal)}
+.lg.cone{background:var(--amber-soft);border:1px solid var(--amber)}
+.lg.imbl{height:0;border-top:2px dashed var(--coral);border-radius:0}
+.lg.hdg{height:0;border-top:2px solid var(--teal);border-radius:0}
+
+.readouts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:8px;overflow:hidden;margin:12px 12px 0}
+.ro{background:var(--panel);padding:9px 11px;display:grid;gap:1px;min-width:0}
+.ro .k{font-size:10.5px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;font-family:var(--f-head);font-weight:600}
+.ro .v{font-family:var(--f-head);font-weight:700;font-size:19px;font-variant-numeric:tabular-nums;line-height:1.25;overflow-wrap:anywhere}
+.ro .s{font-size:11px;color:var(--faint);font-variant-numeric:tabular-nums}
+.ro.warn .v{color:var(--amber)}
+.ro.crit .v{color:var(--coral)}
+.ro.ok .v{color:var(--teal)}
+.sliders{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 22px;padding:14px 16px 6px}
+.sl{display:grid;gap:4px}
+.sl label{display:flex;justify-content:space-between;align-items:baseline;font-size:12.5px;font-weight:500}
+.sl output{font-family:var(--f-mono);font-size:12.5px;color:var(--teal);font-variant-numeric:tabular-nums}
+.sl input{width:100%;accent-color:var(--teal);margin:0}
+.sl .ends{display:flex;justify-content:space-between;font-size:10.5px;color:var(--faint);font-family:var(--f-mono)}
+.map-foot{padding:6px 16px 14px;display:grid;gap:3px}
+
+/* ledger */
+.ledger-h .for{font-size:12.5px;color:var(--muted)}
+.ledger-h .for b{color:var(--text);font-weight:600}
+.vpill{font-size:11.5px;padding:3px 9px;border-radius:999px;border:1px solid var(--teal-line);color:var(--teal);background:var(--teal-soft);white-space:nowrap}
+.vpill.fail{border-color:var(--coral-line);color:var(--coral);background:var(--coral-soft)}
+.tbl-wrap{overflow-x:auto;padding:0 12px 14px}
+table{width:100%;border-collapse:collapse;min-width:640px;font-size:12.5px}
+th{text-align:left;font-family:var(--f-head);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:600;padding:7px 8px;border-bottom:1px solid var(--line2)}
+td{padding:8px;border-bottom:1px solid var(--line);vertical-align:top;font-variant-numeric:tabular-nums}
+td.id{font-family:var(--f-mono);color:var(--teal);font-size:11.5px;width:36px}
+td.val{font-family:var(--f-mono);font-size:11.5px}
+td.val small{display:block;font-family:var(--f-body);color:var(--faint);font-size:10.5px}
+td.time{white-space:nowrap;color:var(--muted);font-size:12px}
+tr.hl td{background:var(--teal-soft)}
+tr.bad td.id{color:var(--coral)}
+.cf{display:inline-block;font-size:10.5px;font-weight:600;padding:1px 7px;border-radius:3px;border:1px solid var(--line2);color:var(--muted);white-space:nowrap}
+.cf.High{background:var(--teal);border-color:var(--teal);color:var(--teal-ink)}
+.cf.Medium{border-color:var(--teal-line);color:var(--teal)}
+.cf.None{border-style:dashed;color:var(--faint)}
+.ck{white-space:nowrap;font-size:11.5px;font-weight:500}
+.ck.ok{color:var(--teal)}
+.ck.bad{color:var(--coral)}
+
+.foot{max-width:1320px;margin:0 auto;padding:0 20px 28px;color:var(--faint);font-size:12px}
+
+@media (max-width: 960px){
+  .grid{grid-template-columns:minmax(0,1fr)}
+  .phone-wrap{position:static}
+  .screen{height:680px;min-height:0}
+}
+@media (max-width: 640px){
+  .top-in{padding:10px 16px;gap:8px 12px}
+  .brand p{display:none}
+  .wrap{padding-inline:16px}
+  .foot{padding-inline:16px}
+  .readouts{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .sliders{grid-template-columns:minmax(0,1fr)}
+  .phone{border-radius:30px;padding:7px}
+  .screen{border-radius:24px;height:640px}
+  .map-box{padding:0 8px}
+  .readouts{margin-inline:8px}
+}
+@media (prefers-reduced-motion: reduce){
+  *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+}
+</style>
+
+<header class="top">
+  <div class="top-in">
+    <div class="brand">
+      <svg class="mark" viewBox="0 0 34 34" aria-hidden="true">
+        <circle cx="17" cy="17" r="15.5" fill="none" stroke="var(--teal)" stroke-width="1.2" opacity=".5"/>
+        <circle cx="17" cy="17" r="10" fill="none" stroke="var(--teal)" stroke-width="1.2" opacity=".75"/>
+        <path d="M17 17 L29 9" stroke="var(--teal)" stroke-width="1.6"/>
+        <circle cx="17" cy="17" r="2.6" fill="var(--teal)"/>
+        <circle cx="25" cy="11.5" r="1.8" fill="var(--amber)"/>
+      </svg>
+      <div>
+        <h1>SAGARAKSHAK</h1>
+        <p>Agentic marine intelligence for small-boat fishers · SIH 2026 · PS 26176 (ISRO / NRSC)</p>
+      </div>
+    </div>
+    <span class="proto" role="status">PROTOTYPE — SIMULATED DATA</span>
+    <div class="top-ctl">
+      <label class="switch" for="offline">
+        <input type="checkbox" id="offline" role="switch" aria-label="Off-grid mode: simulate loss of signal">
+        <span class="track"></span><span id="offlineLbl">Signal on</span>
+      </label>
+      <button class="ghost" id="themeBtn" type="button">Theme</button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="grid">
+    <!-- LEFT: phone -->
+    <section class="phone-wrap" aria-label="Fisher's phone">
+      <div class="phone">
+        <div class="screen">
+          <div class="status">
+            <span class="num">06:42</span>
+            <span class="sig"><i></i><span id="sigText">GEMINI · GAGAN link</span></span>
+            <span class="num">78%</span>
+          </div>
+          <div class="apphead">
+            <b>SAGARAKSHAK</b>
+            <span class="lang"><span class="ta">தமிழ்</span> · Tamil</span>
+          </div>
+          <div class="packet" id="packet" hidden>
+            <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><path d="M11 2 L19 5 V11 C19 15.5 15.5 19 11 20.5 C6.5 19 3 15.5 3 11 V5 Z" fill="none" stroke="var(--teal)" stroke-width="1.5"/><path d="M7.5 11 L10 13.5 L14.8 8.6" fill="none" stroke="var(--teal)" stroke-width="1.8"/></svg>
+            <strong>Signed safety packet — valid until 18:40, signature verified</strong>
+            <span>Received 06:10 via GEMINI (GAGAN) · drift, border, wave &amp; wind data on this device</span>
+          </div>
+          <div class="chat" id="chat" aria-live="polite"></div>
+          <div class="presets">
+            <div class="eyebrow"><span>Tap a question</span><span id="presetHint">5 presets</span></div>
+            <div class="chips" id="chips"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- RIGHT: map + ledger -->
+    <div class="right">
+      <div class="offbar" id="offbar" hidden>
+        <svg width="18" height="18" viewBox="0 0 22 22" aria-hidden="true"><path d="M11 2 L19 5 V11 C19 15.5 15.5 19 11 20.5 C6.5 19 3 15.5 3 11 V5 Z" fill="none" stroke="var(--teal)" stroke-width="1.6"/></svg>
+        <span><b>Off-grid.</b> Drift and border alerts keep running on the boat's device from the signed packet. Catch analysis and new fish-zone lookups wait for signal.</span>
+      </div>
+
+      <section class="card" aria-label="Chart">
+        <div class="card-h">
+          <div>
+            <div class="eyebrow">Palk Strait · schematic chart</div>
+            <h2>Position, fishing zones &amp; drift</h2>
+          </div>
+          <div class="legend">
+            <span><i class="lg pfz"></i>PFZ</span>
+            <span><i class="lg cone"></i>Drift cone, 90 min</span>
+            <span><i class="lg imbl"></i>IMBL</span>
+            <span><i class="lg hdg"></i>Safer heading</span>
+          </div>
+        </div>
+        <div class="map-box">
+          <svg id="map" viewBox="0 0 600 440" role="img" aria-label="Schematic chart of the Palk Strait showing the boat, fishing zones, the maritime boundary and the drift cone">
+            <defs>
+              <clipPath id="lkClip"><polygon points="420,0 300,440 600,440 600,0"/></clipPath>
+              <clipPath id="mapClip"><rect x="0" y="0" width="600" height="440"/></clipPath>
+            </defs>
+            <rect class="m-sea" x="0" y="0" width="600" height="440"/>
+            <polygon class="m-lk" points="420,0 300,440 600,440 600,0"/>
+            <!-- graticule -->
+            <g>
+              <line class="m-grid" x1="80" y1="0" x2="80" y2="440"/>
+              <line class="m-grid" x1="300" y1="0" x2="300" y2="440"/>
+              <line class="m-grid" x1="520" y1="0" x2="520" y2="440"/>
+              <line class="m-grid" x1="0" y1="202" x2="600" y2="202"/>
+              <line class="m-grid" x1="0" y1="424" x2="600" y2="424"/>
+            </g>
+            <!-- current field -->
+            <g id="curField"></g>
+            <!-- land -->
+            <path class="m-land" d="M0,0 L60,0 C75,60 55,120 70,180 C78,215 64,238 60,248 L60,290 C58,330 70,380 55,440 L0,440 Z"/>
+            <path class="m-land" d="M58,246 C120,236 172,252 208,298 C222,318 234,334 242,346 C232,352 220,352 212,348 C176,318 118,292 58,292 Z"/>
+            <g>
+              <ellipse class="m-shoal" cx="262" cy="357" rx="7" ry="3"/>
+              <ellipse class="m-shoal" cx="284" cy="364" rx="6" ry="2.5"/>
+              <ellipse class="m-shoal" cx="306" cy="372" rx="7" ry="3"/>
+              <ellipse class="m-shoal" cx="329" cy="381" rx="6" ry="2.5"/>
+              <ellipse class="m-shoal" cx="351" cy="390" rx="7" ry="3"/>
+            </g>
+            <path class="m-land" d="M372,402 C420,380 480,370 540,372 L600,362 L600,440 L352,440 C356,425 362,410 372,402 Z"/>
+            <path class="m-land" d="M522,0 L600,0 L600,132 C585,122 560,98 546,72 C534,48 526,22 522,0 Z"/>
+            <ellipse class="m-land" cx="492" cy="154" rx="17" ry="9"/>
+            <text class="m-gridlbl" x="84" y="14">79.30°E</text>
+            <text class="m-gridlbl" x="304" y="14">79.40°E</text>
+            <text class="m-gridlbl" x="438" y="198">9.20°N</text>
+            <text class="m-landlbl" x="92" y="275">Rameswaram</text>
+            <text class="m-landlbl" x="176" y="372">Dhanushkodi</text>
+            <text class="m-landlbl" x="458" y="416">Mannar (LK)</text>
+            <text class="m-landlbl" x="552" y="36">Jaffna</text>
+            <text class="m-landlbl" x="552" y="50">(LK)</text>
+            <text class="m-landlbl" x="470" y="180">Delft</text>
+            <text class="m-sealbl" x="96" y="36">PALK BAY</text>
+            <text class="m-sealbl" x="84" y="410">GULF OF MANNAR</text>
+            <text class="m-sealbl" x="420" y="262">SRI LANKAN WATERS</text>
+            <!-- PFZs -->
+            <g class="pfzs">
+              <ellipse class="m-pfz" cx="180" cy="120" rx="58" ry="28"/>
+              <text class="m-pfzlbl m-halo" x="160" y="124">PFZ-1</text>
+              <ellipse class="m-pfz pfz2" cx="245" cy="220" rx="52" ry="32"/>
+              <text class="m-pfzlbl m-halo" x="226" y="224">PFZ-2</text>
+              <text class="m-rec m-halo" x="206" y="265">RECOMMENDED</text>
+              <ellipse class="m-pfz caution" cx="350" cy="60" rx="32" ry="22"/>
+              <text class="m-pfzlbl caution m-halo" x="330" y="64">PFZ-3</text>
+              <text class="m-cached m-halo" x="200" y="160">cached 06:10</text>
+            </g>
+            <!-- IMBL -->
+            <line class="m-imbl" x1="420" y1="0" x2="300" y2="440"/>
+            <text class="m-imbllbl m-halo" x="426" y="30">IMBL</text>
+            <!-- drift -->
+            <g id="drift" clip-path="url(#mapClip)">
+              <path id="cone" class="m-cone"/>
+              <path id="coneLK" class="m-cone-lk" clip-path="url(#lkClip)"/>
+              <line id="center" class="m-center"/>
+              <g id="iso"></g>
+              <line id="distLine" class="m-dist"/>
+              <text id="distLbl" class="m-distlbl m-halo"></text>
+              <line id="hdg" class="m-hdg"/>
+              <path id="hdgHead" class="m-hdghead"/>
+              <text id="hdgLbl" class="m-hdglbl m-halo"></text>
+            </g>
+            <!-- boat -->
+            <circle class="m-ring" cx="330" cy="180" r="10"/>
+            <circle class="m-boat" cx="330" cy="180" r="5"/>
+            <text class="m-boatlbl m-halo" x="302" y="168">You</text>
+            <!-- scale / north -->
+            <line class="m-scale" x1="96" y1="424" x2="196" y2="424"/>
+            <line class="m-scale" x1="96" y1="419" x2="96" y2="429"/>
+            <line class="m-scale" x1="196" y1="419" x2="196" y2="429"/>
+            <text class="m-scalelbl" x="200" y="428">5 km</text>
+            <g transform="translate(576,300)">
+              <path d="M0,-16 L6,4 L0,0 L-6,4 Z" style="fill:var(--muted)"/>
+              <text x="-4" y="18" class="m-scalelbl">N</text>
+            </g>
+            <!-- off-chart note for refusal -->
+            <g class="m-offchart">
+              <rect x="118" y="8" width="300" height="40" rx="6"/>
+              <text x="130" y="25">▲ Kodiyakarai sector ~120 km NNE, off chart</text>
+              <text x="130" y="40" style="font-weight:400">No verified fish-zone data (cloud cover)</text>
+            </g>
+          </svg>
+        </div>
+
+        <div class="readouts" id="readouts">
+          <div class="ro"><span class="k">To IMBL</span><span class="v num">2.0 km</span><span class="s">perpendicular, east</span></div>
+          <div class="ro warn" id="roTTB"><span class="k">Boundary in</span><span class="v num" id="ttb">—</span><span class="s" id="ttbSub">at current drift</span></div>
+          <div class="ro ok"><span class="k">Safer heading</span><span class="v num" id="hdgV">—</span><span class="s">into drift, away from IMBL</span></div>
+          <div class="ro"><span class="k">Drift</span><span class="v num" id="driftV">—</span><span class="s" id="driftSub">—</span></div>
+        </div>
+
+        <div class="sliders">
+          <div class="sl">
+            <label for="cur">Surface current <output id="curOut" for="cur">0.70 m/s</output></label>
+            <input type="range" id="cur" min="0" max="1" step="0.05" value="0.7">
+            <div class="ends"><span>0</span><span>toward 095°</span><span>1.0 m/s</span></div>
+          </div>
+          <div class="sl">
+            <label for="wind">Wind <output id="windOut" for="wind">22 km/h</output></label>
+            <input type="range" id="wind" min="0" max="40" step="1" value="22">
+            <div class="ends"><span>0</span><span>from 240° (SW)</span><span>40 km/h</span></div>
+          </div>
+        </div>
+        <div class="map-foot">
+          <span class="src">Drift = current + 3% wind leeway, with ±17° heading and ±20% speed spread. Recomputed in the browser each time a slider moves.</span>
+          <span class="src">source: INCOIS PFZ advisory &amp; surface-current forecast, IMD wind — simulated · IMBL drawn schematically, not for navigation</span>
+        </div>
+      </section>
+
+      <section class="card" aria-label="Evidence ledger">
+        <div class="card-h ledger-h">
+          <div>
+            <div class="eyebrow">Evidence ledger</div>
+            <div class="for" id="ledgerFor"></div>
+          </div>
+          <span class="vpill" id="vpill"></span>
+        </div>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>ID</th><th>Source</th><th>Value used</th><th>Timestamp</th><th>Confidence</th><th>Verifier</th></tr></thead>
+            <tbody id="ledger"></tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+  </div>
+</main>
+<p class="foot">Interaction prototype. Every value on this page is simulated; source names show where the live system would draw its data. The drift maths is real and runs in the browser.</p>
+
+<script>
+(function(){
+"use strict";
+const $ = s => document.querySelector(s);
+const reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ---------- geometry (km, y down) ---------- */
+const KM = 20;                       // px per km
+const P = {x:16.5, y:9};             // boat
+const A = {x:21, y:0}, B = {x:15, y:22}; // IMBL segment
+const L = Math.hypot(B.x-A.x, B.y-A.y);
+const N = {x:(B.y-A.y)/L, y:-(B.x-A.x)/L}; // unit normal pointing east (toward LK)
+const D = -((P.x-A.x)*N.x + (P.y-A.y)*N.y); // km to IMBL
+const CUR_TO = 95, WIND_TO = 60, SPREAD = 17;
+
+const state = { cur:0.7, wind:22, offline:false, active:null, busy:false, accuracy:71, logged:false };
+const msgs = {};
+let seq = 0, timers = [], finishFn = null;
+
+const bvec = (b,s) => { const r=b*Math.PI/180; return {x:Math.sin(r)*s, y:-Math.cos(r)*s}; };
+const rot = (v,deg) => { const r=deg*Math.PI/180, c=Math.cos(r), s=Math.sin(r); return {x:v.x*c-v.y*s, y:v.x*s+v.y*c}; };
+const brg = v => ((Math.atan2(v.x,-v.y)*180/Math.PI)+360)%360;
+const px = p => [(p.x*KM).toFixed(1), (p.y*KM).toFixed(1)];
+const pad3 = n => String(Math.round(n)%360).padStart(3,'0');
+
+function fmtT(m){ return m < 100 ? Math.round(m)+' min' : (m/60).toFixed(1)+' h'; }
+function fmtRange(a,b){
+  if (a > 24*60) return 'over 24 h';
+  if (b < 100) return Math.round(a)+'–'+Math.round(b)+' min';
+  if (a < 100) return Math.round(a)+' min – '+(b/60).toFixed(1)+' h';
+  return (a/60).toFixed(1)+'–'+(b/60).toFixed(1)+' h';
+}
+
+function drift(){
+  const c = bvec(CUR_TO, state.cur);
+  const lw = 0.03*state.wind/3.6;
+  const w = bvec(WIND_TO, lw);
+  const v = {x:c.x+w.x, y:c.y+w.y};
+  const sp = Math.hypot(v.x, v.y);
+  const vns = [];
+  for (const f of [0.8,1,1.2]) for (const o of [-SPREAD,0,SPREAD]){ const r=rot(v,o); vns.push(f*(r.x*N.x+r.y*N.y)); }
+  const mx = Math.max(...vns), mn = Math.min(...vns);
+  const tmin = mx > 0.005 ? D*1000/mx/60 : null;
+  const tmax = mn > 0.005 ? D*1000/mn/60 : null;
+  let range, short, sentence, level;
+  if (tmin === null){
+    short = 'not closing'; range = 'not closing'; level = 'ok';
+    sentence = 'At current drift you are <b>not moving toward</b> the border.';
+  } else if (tmax === null){
+    short = '≥ '+fmtT(tmin); range = fmtT(tmin)+' or longer';
+    level = tmin < 30 ? 'crit' : tmin < 120 ? 'warn' : 'ok';
+    sentence = 'At current drift you could reach it in <b>'+fmtT(tmin)+' or longer</b>; some tracks never reach it.';
+  } else {
+    range = short = fmtRange(tmin, tmax);
+    level = tmin < 30 ? 'crit' : tmin < 120 ? 'warn' : 'ok';
+    sentence = 'At current drift you could reach it in <b>'+range+'</b>.';
+  }
+  const vh = sp > 0.01 ? {x:v.x/sp, y:v.y/sp} : {x:0,y:0};
+  let h = {x:-N.x-0.6*vh.x, y:-N.y-0.6*vh.y}; const hl = Math.hypot(h.x,h.y); h = {x:h.x/hl, y:h.y/hl};
+  const vn = v.x*N.x + v.y*N.y;
+  const share = sp > 0.001 ? Math.round(100*state.cur/(state.cur+lw)) : 0;
+  return { v, sp, vh, lw, vn, tmin, tmax, range, short, sentence, level, h, hdg:brg(h), dir: sp>0.01 ? brg(v) : null, share };
+}
+
+/* ---------- map drawing ---------- */
+const curPts = [];
+for (let x=120; x<=560; x+=80) for (let y=40; y<=400; y+=80){
+  if (x < 95) continue;
+  if (y > 230 && y < 370 && x < 260) continue;
+  if (y > 350 && x > 340) continue;
+  if (x > 510 && y < 150) continue;
+  if (Math.abs(x-330) < 50 && Math.abs(y-180) < 50) continue;
+  curPts.push([x,y]);
+}
+function drawCurrents(){
+  const len = 6 + state.cur*22, u = bvec(CUR_TO,1);
+  let s = '';
+  if (state.cur > 0.001){
+    for (const [x,y] of curPts){
+      const x2 = x+u.x*len, y2 = y+u.y*len, hx = x2-u.x*5, hy = y2-u.y*5;
+      s += '<line class="m-cur" x1="'+x+'" y1="'+y+'" x2="'+x2.toFixed(1)+'" y2="'+y2.toFixed(1)+'"/>';
+      s += '<path class="m-curhead" d="M'+x2.toFixed(1)+','+y2.toFixed(1)+' L'+(hx-u.y*3).toFixed(1)+','+(hy+u.x*3).toFixed(1)+' L'+(hx+u.y*3).toFixed(1)+','+(hy-u.x*3).toFixed(1)+' Z"/>';
+    }
+  }
+  $('#curField').innerHTML = s;
+}
+
+function drawDrift(d){
+  const T = 90*60;
+  const R = d.sp*T/1000;       // km at 90 min
+  const cone = $('#cone'), lk = $('#coneLK'), iso = $('#iso'), ctr = $('#center');
+  if (d.sp < 0.01){
+    cone.setAttribute('d',''); lk.setAttribute('d',''); iso.innerHTML='';
+    ctr.setAttribute('x1',0);ctr.setAttribute('y1',0);ctr.setAttribute('x2',0);ctr.setAttribute('y2',0);
+  } else {
+    const base = 0.15;
+    const l0 = rot(d.vh,-90), r0 = rot(d.vh,90);
+    const pts = [];
+    pts.push({x:P.x+l0.x*base, y:P.y+l0.y*base});
+    for (let i=0;i<=14;i++){ const o=-SPREAD+i*(2*SPREAD/14); const u=rot(d.vh,o); pts.push({x:P.x+u.x*R*1.2, y:P.y+u.y*R*1.2}); }
+    pts.push({x:P.x+r0.x*base, y:P.y+r0.y*base});
+    const path = 'M'+pts.map(p=>px(p).join(',')).join(' L')+' Z';
+    cone.setAttribute('d',path); lk.setAttribute('d',path);
+    const e = px({x:P.x+d.vh.x*R*1.2, y:P.y+d.vh.y*R*1.2});
+    ctr.setAttribute('x1',P.x*KM);ctr.setAttribute('y1',P.y*KM);ctr.setAttribute('x2',e[0]);ctr.setAttribute('y2',e[1]);
+    let s='';
+    for (const m of [30,60,90]){
+      const r = d.sp*m*60/1000;
+      if (r*KM < 8) continue;
+      const a = rot(d.vh,-SPREAD), b = rot(d.vh,SPREAD);
+      const p1 = px({x:P.x+a.x*r, y:P.y+a.y*r}), p2 = px({x:P.x+b.x*r, y:P.y+b.y*r});
+      s += '<path class="m-iso" d="M'+p1[0]+','+p1[1]+' A'+(r*KM).toFixed(1)+','+(r*KM).toFixed(1)+' 0 0 1 '+p2[0]+','+p2[1]+'"/>';
+      const lp = px({x:P.x+b.x*(r)+b.y*0.0, y:P.y+b.y*r});
+      s += '<text class="m-isolbl m-halo" x="'+(+lp[0]+4)+'" y="'+(+lp[1]+10)+'">'+m+'′</text>';
+    }
+    iso.innerHTML = s;
+  }
+  // distance to IMBL
+  const foot = {x:P.x+N.x*D, y:P.y+N.y*D}, f = px(foot);
+  const dl = $('#distLine'); dl.setAttribute('x1',P.x*KM);dl.setAttribute('y1',P.y*KM);dl.setAttribute('x2',f[0]);dl.setAttribute('y2',f[1]);
+  const lbl = $('#distLbl'); lbl.setAttribute('x',(+f[0]-40)); lbl.setAttribute('y',(+f[1]+22)); lbl.textContent = D.toFixed(1)+' km';
+  // heading arrow
+  const HL = 2.3, tip = {x:P.x+d.h.x*HL, y:P.y+d.h.y*HL}, t = px(tip);
+  const hd = $('#hdg'); const st = px({x:P.x+d.h.x*0.35, y:P.y+d.h.y*0.35});
+  hd.setAttribute('x1',st[0]);hd.setAttribute('y1',st[1]);hd.setAttribute('x2',t[0]);hd.setAttribute('y2',t[1]);
+  const back = {x:tip.x-d.h.x*0.45, y:tip.y-d.h.y*0.45}, pp = rot(d.h,90);
+  const h1 = px({x:back.x+pp.x*0.22, y:back.y+pp.y*0.22}), h2 = px({x:back.x-pp.x*0.22, y:back.y-pp.y*0.22});
+  const t2 = px({x:tip.x+d.h.x*0.15, y:tip.y+d.h.y*0.15});
+  $('#hdgHead').setAttribute('d','M'+t2.join(',')+' L'+h1.join(',')+' L'+h2.join(',')+' Z');
+  const hlb = $('#hdgLbl'); hlb.setAttribute('x', +t[0]-(d.h.x<0?38:-6)); hlb.setAttribute('y', +t[1]+(d.h.y<0?-6:14)); hlb.textContent = pad3(d.hdg)+'°';
+}
+
+function updateReadouts(d){
+  const ro = $('#roTTB'); ro.className = 'ro '+d.level;
+  $('#ttb').textContent = d.short;
+  $('#ttbSub').textContent = d.level==='crit' ? 'act now · at current drift' : 'at current drift';
+  $('#hdgV').textContent = pad3(d.hdg)+'°';
+  $('#driftV').textContent = d.sp.toFixed(2)+' m/s';
+  $('#driftSub').textContent = d.dir===null ? 'no drift' : 'toward '+pad3(d.dir)+'° · '+(d.sp*3.6).toFixed(1)+' km/h';
+  $('#curOut').textContent = state.cur.toFixed(2)+' m/s';
+  $('#windOut').textContent = state.wind+' km/h';
+}
+
+const LVL = { ok:['ok','CLEAR'], warn:['warn','CAUTION'], crit:['crit','ALERT'] };
+function updateLive(d, flash){
+  document.querySelectorAll('[data-live]').forEach(el=>{
+    const k = el.dataset.live;
+    let html = null;
+    if (k==='sentence') html = d.sentence;
+    else if (k==='hdg') html = pad3(d.hdg)+'°';
+    else if (k==='lvl'){ el.className = 'chip '+LVL[d.level][0]; el.textContent = LVL[d.level][1]; return; }
+    if (html !== null && el.innerHTML !== html){
+      el.innerHTML = html;
+      if (flash && !reduce){ el.classList.add('flash'); clearTimeout(el._t); el._t = setTimeout(()=>el.classList.remove('flash'),450); }
+    }
+  });
+}
+
+function recompute(flash){
+  const d = drift();
+  drawCurrents(); drawDrift(d); updateReadouts(d); updateLive(d, flash);
+  if (state.active && msgs[state.active] && msgs[state.active].qid==='border') renderLedger();
+  return d;
+}
+
+/* ---------- questions ---------- */
+const Q = {
+  fish:  { ta:'இன்று மீன் எங்கே கிடைக்கும்?', en:'Where will fish be today?', net:false },
+  safe:  { ta:'நாளை கடலுக்குச் செல்வது பாதுகாப்பானதா?', en:'Is it safe to go to sea tomorrow?', net:false },
+  border:{ ta:'எல்லைக்கு எவ்வளவு தூரம்?', en:'How far to the border?', net:false },
+  causal:{ ta:'மீன்பிடி குறைந்தது ஏன்?', en:'Why has the catch declined?', net:true },
+  refuse:{ ta:'கோடியக்கரை அருகே மீன் கிடைக்குமா?', en:'Will there be fish near Kodiyakarai?', net:true }
+};
+const ORDER = ['fish','safe','border','causal','refuse'];
+
+function agentsFor(qid, d){
+  const f2 = n => n.toFixed(2);
+  const T = {
+    fish: [
+      ['Ocean-Analytics','Chlorophyll and a temperature front overlap in PFZ-2','chl 1.8 mg/m³ · ΔSST 0.7 °C / 3 km'],
+      ['Weather-Intel','Calm window until about 14:00','wind 18–22 km/h · Hs 0.6–0.9 m'],
+      ['Geospatial','PFZ-2 is 4.7 km away; PFZ-3 edge sits near the IMBL','d(PFZ-2) 4.7 km @ 245° · PFZ-3→IMBL 1.0 km'],
+      ['Causal-Reasoning','Front has held 3 days, so shoals likely stay','front persistence 72 h · 3 passes']
+    ],
+    safe: [
+      ['Ocean-Analytics','Swell builds from the SW after noon','Hs 0.8 → 1.9 m · Tp 8 s'],
+      ['Weather-Intel','Gusts of 35–40 km/h after 14:00','wind 20 → 38 km/h · from 235°'],
+      ['Geospatial','Return run to Pamban takes about 1 h 10 min','14 km @ 12 km/h'],
+      ['Causal-Reasoning','Afternoon rise is a sea-breeze pattern, not a storm','IMD cyclone outlook: nil, 72 h']
+    ],
+    border: [
+      ['Ocean-Analytics','Surface current '+f2(state.cur)+' m/s toward 095°','u '+f2(bvec(CUR_TO,state.cur).x)+' · v '+f2(-bvec(CUR_TO,state.cur).y)+' m/s'],
+      ['Weather-Intel','Wind '+state.wind+' km/h from 240° adds leeway','leeway '+f2(d.lw)+' m/s (3% of wind)'],
+      ['Geospatial',D.toFixed(1)+' km to IMBL; boundary in '+d.range,'drift '+f2(d.sp)+' m/s · vₙ '+f2(d.vn)+' m/s'],
+      ['Causal-Reasoning','Drift is '+d.share+'% current, '+(100-d.share)+'% wind','|cur| '+f2(state.cur)+' · |leeway| '+f2(d.lw)+' m/s']
+    ],
+    causal: [
+      ['Ocean-Analytics','SST +1.8 °C; chlorophyll down 40%','SST anom +1.8 °C (21 d) · chl 0.9 mg/m³'],
+      ['Weather-Intel','Weak winds and heavy rain last week','rain 142 mm / 7 d · upwelling idx −35%'],
+      ['Geospatial','Decline is concentrated inshore (< 10 km)','38 boats · 212 trips · 6 grid cells'],
+      ['Causal-Reasoning','Ranked 4 drivers; SST anomaly leads','weights .42 · .28 · .18 · .12']
+    ],
+    refuse: [
+      ['Ocean-Analytics','Chlorophyll unavailable for this sector','OCM valid px 0/140 · last clear 23 Sep', 'warn'],
+      ['Weather-Intel','Sector under 92% cloud cover','INSAT-3DR cloud mask 06:00'],
+      ['Geospatial','Kodiyakarai sector is ~120 km NNE','sector 10.2–10.4°N'],
+      ['Causal-Reasoning','Cannot rank zones without chlorophyll','inputs needed 2 · usable 1', 'warn']
+    ]
+  };
+  return T[qid].map(a=>{
+    let mode = 'live', note = '';
+    if (state.offline){
+      if (a[0]==='Causal-Reasoning'){ mode='off'; note='needs signal'; }
+      else if (a[0]==='Geospatial'){ note='on device'; }
+      else note='from packet 06:10';
+    }
+    return {name:a[0], claim:a[1], vals:a[2], warn:a[3]==='warn', mode, note};
+  });
+}
+
+const VERIFY = {
+  fish:  {ok:true, n:'4/4', text:'Re-derived 4/4 claims from cited data'},
+  safe:  {ok:true, n:'4/4', text:'Re-derived 4/4 claims from cited data'},
+  border:{ok:true, n:'3/3', text:'Re-derived 3/3 claims from cited data'},
+  causal:{ok:true, n:'5/5', text:'Re-derived 5/5 claims from cited data'},
+  refuse:{ok:false, n:'0/1', text:'0/1 claims derivable · chlorophyll 6 d old, limit 72 h · answer withheld'}
+};
+
+/* ---------- ledgers ---------- */
+function ledgerRows(qid){
+  const d = drift();
+  const R = {
+    fish: [
+      ['E1','INCOIS PFZ advisory, Palk Bay sector','PFZ-2 centre 9.19°N 79.38°E; PFZ-3 flagged near IMBL','29 Sep 05:30','High','ok'],
+      ['E2','Oceansat-3 OCM chlorophyll-a','1.8 mg/m³ (PFZ-2 mean, 5 × 5 km)','28 Sep 10:40','High','ok'],
+      ['E3','Sea-surface temperature, INSAT-3DR via MOSDAC','Front 28.4 → 29.1 °C across 3 km','29 Sep 03:00','Medium','ok'],
+      ['E4','INCOIS ocean-state forecast','Waves 0.6–0.9 m until 14:00','29 Sep 05:30','High','ok'],
+      ['E5','Geospatial agent (computed)','PFZ-2 4.7 km @ 245°, 5.5 km inside IMBL; PFZ-3 edge 1.0 km from IMBL','29 Sep 06:42','High','ok']
+    ],
+    safe: [
+      ['E1','INCOIS ocean-state forecast for 30 Sep','Hs 0.8 m (06:00) → 1.9 m (15:00)','issued 29 Sep 05:30','High','ok'],
+      ['E2','IMD district wind forecast, Ramanathapuram','20 km/h; gusts 35–40 km/h after 14:00','issued 29 Sep 08:30','Medium','ok'],
+      ['E3','INCOIS high-wave alert bulletin','No alert, Ramanathapuram coast','29 Sep 05:30','High','ok'],
+      ['E4','IMD cyclone outlook, Bay of Bengal','No system expected, next 72 h','29 Sep 08:30','High','ok'],
+      ['E5','Geospatial agent (computed)','Grounds → Pamban harbour 14 km; ~1 h 10 min at 12 km/h','29 Sep 06:42','High','ok']
+    ],
+    border: [
+      ['E1','Boat position, NavIC receiver on GEMINI unit','9.21°N 79.41°E','29 Sep 06:42:10','High','ok'],
+      ['E2','IMBL geometry (1974 India–Sri Lanka agreement)','Nearest segment '+D.toFixed(1)+' km E, bearing 075°','static','High','ok'],
+      ['E3','INCOIS surface-current forecast',state.cur.toFixed(2)+' m/s toward 095°<small>set by demo slider</small>','29 Sep 05:30','Medium','ok'],
+      ['E4','IMD wind forecast',state.wind+' km/h from 240°<small>set by demo slider</small>','29 Sep 08:30','Medium','ok'],
+      ['E5','Leeway model (on device)','3% of wind; ±17° heading, ±20% speed spread','computed now','Medium','ok'],
+      ['E6','Drift model output',(d.dir===null?'no drift':'drift '+d.sp.toFixed(2)+' m/s → '+pad3(d.dir)+'°')+'; boundary '+d.range+'; heading '+pad3(d.hdg)+'°','computed now',d.level==='crit'?'High':'Medium','ok']
+    ],
+    causal: [
+      ['E1','SST anomaly, MOSDAC vs 2015–2024 climatology','+1.8 °C, 21-day mean','29 Sep 03:00','High','ok'],
+      ['E2','Oceansat-3 OCM chlorophyll-a, 8-day composite','0.9 mg/m³ (−40% vs 5-yr Sep mean)','27 Sep','High','ok'],
+      ['E3','Upwelling index from ASCAT wind stress','−35% vs seasonal normal','28 Sep','Medium','ok'],
+      ['E4','IMD rainfall + SMAP surface salinity','142 mm in 7 days; salinity −1.2 PSU','28 Sep','Low','ok'],
+      ['E5','Co-op catch logs, Pamban (38 boats)','Oil sardine −46% vs Sep 2025','28 Sep','Medium','ok']
+    ],
+    refuse: [
+      ['E1','Oceansat-3 OCM chlorophyll-a','No valid pixels (92% cloud)<small>last clear pass 23 Sep 10:40</small>','6 days old · limit 72 h','None','stale'],
+      ['E2','Sea-surface temperature, INSAT-3DR via MOSDAC','29.0 °C sector mean','29 Sep 03:00','Medium','ok'],
+      ['E3','INCOIS PFZ advisory, Kodiyakarai sector','Not issued today (cloud cover)','—','None','missing'],
+      ['E4','INSAT-3DR cloud mask','92% cover over sector','29 Sep 06:00','High','ok']
+    ]
+  };
+  return R[qid];
+}
+
+let hlRows = [];
+function renderLedger(){
+  const m = msgs[state.active]; if (!m) return;
+  const rows = ledgerRows(m.qid), v = VERIFY[m.qid];
+  $('#ledgerFor').innerHTML = 'for <b>'+Q[m.qid].en+'</b>'+(m.offline?' · checked against signed packet':'');
+  const vp = $('#vpill'); vp.className = 'vpill'+(v.ok?'':' fail');
+  vp.textContent = v.ok ? 'Verifier: '+v.n+' claims re-derived' : 'Verifier: answer withheld';
+  const ck = {ok:['ok', m.offline && m.qid!=='border' ? '✓ packet sig' : '✓ re-derived'], stale:['bad','✕ stale'], missing:['bad','✕ missing']};
+  $('#ledger').innerHTML = rows.map(r=>{
+    const c = ck[r[5]];
+    return '<tr data-row="'+r[0]+'" class="'+(hlRows.includes(r[0])?'hl ':'')+(r[5]!=='ok'?'bad':'')+'">'+
+      '<td class="id">'+r[0]+'</td><td>'+r[1]+'</td><td class="val">'+r[2]+'</td><td class="time">'+r[3]+'</td>'+
+      '<td><span class="cf '+r[4]+'">'+(r[4]==='None'?'n/a':r[4])+'</span></td><td class="ck '+c[0]+'">'+c[1]+'</td></tr>';
+  }).join('');
+}
+
+/* ---------- answers ---------- */
+const cite = (mid, ids) => '<button class="cite" type="button" data-msg="'+mid+'" data-rows="'+ids.join(' ')+'" aria-label="Show evidence '+ids.join(', ')+'">'+ids.join('·')+'</button>';
+
+function answerHTML(qid, mid, offline){
+  const c = ids => cite(mid, ids);
+  const pk = offline ? '<div class="src">served from signed packet · received 06:10</div>' : '';
+  if (qid==='fish') return {cls:'', html:
+    '<div class="ans-top"><span class="chip ok">VERIFIED</span>4 agents · 4/4 claims</div>'+
+    '<div class="head-ta">இன்று PFZ-2 பகுதியில் மீன் கிடைக்க வாய்ப்பு அதிகம்</div>'+
+    '<div class="head-en">Best chance today: PFZ-2, 4.7 km WSW of you.</div>'+
+    '<ul class="claims">'+
+      '<li>Chlorophyll (1.8 mg/m³) and a sea-temperature front overlap in PFZ-2.'+c(['E1','E2','E3'])+'</li>'+
+      '<li>It is 4.7 km away on bearing 245°, and 5.5 km inside Indian waters.'+c(['E5'])+'</li>'+
+      '<li>Avoid PFZ-3: its eastern edge is 1.0 km from the IMBL.'+c(['E1','E5'])+'</li>'+
+      '<li>Sea stays calm until about 14:00 (waves 0.6–0.9 m).'+c(['E4'])+'</li>'+
+    '</ul>'+pk+
+    '<div class="src">source: INCOIS PFZ advisory, Oceansat-3 OCM, INSAT-3DR SST — simulated</div>'};
+
+  if (qid==='safe'){
+    const hrs=['06','09','12','15','18'], hs=[0.8,0.9,1.2,1.8,1.7];
+    const H=58, top=14, sc=v=>top+H-(v/2)*H;
+    let bars='';
+    hs.forEach((v,i)=>{ const x=26+i*54, y=sc(v);
+      bars+='<rect class="bar'+(v>1.5?' hi':'')+'" x="'+x+'" y="'+y.toFixed(1)+'" width="30" height="'+(top+H-y).toFixed(1)+'" rx="2"/>'+
+            '<text x="'+(x+15)+'" y="'+(y-4).toFixed(1)+'" text-anchor="middle">'+v.toFixed(1)+'</text>'+
+            '<text x="'+(x+15)+'" y="'+(top+H+13)+'" text-anchor="middle">'+hrs[i]+':00</text>'; });
+    const ty=sc(1.5).toFixed(1);
+    const chart='<svg class="minichart" viewBox="0 0 300 92" role="img" aria-label="Forecast wave height for tomorrow by time of day">'+
+      '<line class="axis" x1="20" y1="'+(top+H)+'" x2="290" y2="'+(top+H)+'"/>'+bars+
+      '<line class="thr" x1="20" y1="'+ty+'" x2="290" y2="'+ty+'"/>'+
+      '<text x="290" y="'+(+ty-4)+'" text-anchor="end" style="fill:var(--amber)">1.5 m small-boat limit</text></svg>';
+    return {cls:'', html:
+    '<div class="ans-top"><span class="chip warn">CAUTION</span>4 agents · 4/4 claims</div>'+
+    '<div class="head-ta">நாளை காலை செல்லலாம்; மதியம் 1 மணிக்குள் கரை திரும்புங்கள்</div>'+
+    '<div class="head-en">Go early tomorrow and be back ashore by 13:00.</div>'+
+    '<div class="eyebrow" style="margin-bottom:-4px">Wave height tomorrow, m</div>'+chart+
+    '<ul class="claims">'+
+      '<li>Waves stay under 1 m until about 11:00.'+c(['E1'])+'</li>'+
+      '<li>After 14:00 waves reach 1.6–1.9 m with gusts of 35–40 km/h.'+c(['E1','E2'])+'</li>'+
+      '<li>No cyclone or high-wave alert for the Ramanathapuram coast.'+c(['E3','E4'])+'</li>'+
+      '<li>The run back to Pamban takes about 1 h 10 min, so leave the grounds by 11:45.'+c(['E5'])+'</li>'+
+    '</ul>'+pk+
+    '<div class="src">source: INCOIS ocean-state forecast, IMD district forecast — simulated</div>'};
+  }
+
+  if (qid==='border') return {cls:'', html:
+    '<div class="ans-top"><span class="chip warn" data-live="lvl">CAUTION</span>verified 3/3 · updates with drift sliders</div>'+
+    '<div class="head-ta">எல்லை '+D.toFixed(1)+' கி.மீ தொலைவில் உள்ளது</div>'+
+    '<div class="head-en">The border (IMBL) is '+D.toFixed(1)+' km east of you.</div>'+
+    '<ul class="claims">'+
+      '<li>You are <b>'+D.toFixed(1)+' km</b> west of the IMBL.'+c(['E1','E2'])+'</li>'+
+      '<li><span class="live" data-live="sentence"></span>'+c(['E3','E4','E5','E6'])+'</li>'+
+      '<li>Steer <b class="live" data-live="hdg"></b> to open distance. The drift cone on the chart shows where you could be in 90 min.'+c(['E6'])+'</li>'+
+    '</ul>'+pk+
+    '<div class="src">source: NavIC position, IMBL geometry, INCOIS surface currents — simulated</div>'};
+
+  if (qid==='causal'){
+    const F=[['Sea-surface temperature +1.8 °C above normal',.42,'High',''],
+             ['Chlorophyll down 40% vs 5-year mean',.28,'High',''],
+             ['Weak upwelling (index −35%)',.18,'Medium','med'],
+             ['Freshwater runoff after 142 mm of rain',.12,'Low','low']];
+    const ids=['E1','E2','E3','E4'];
+    const bars=F.map((f,i)=>'<div class="factor '+f[3]+'"><span class="rk">'+(i+1)+'</span><span>'+f[0]+'<span class="conf">'+f[2]+'</span>'+c([ids[i]])+'</span><span class="w">'+Math.round(f[1]*100)+'%</span><span></span><span class="fbar"><i style="width:'+(f[1]/0.5*100)+'%"></i></span></div>').join('');
+    const logged = state.logged;
+    return {cls:'', html:
+    '<div class="ans-top"><span class="chip ok">VERIFIED</span>4 agents · 5/5 claims</div>'+
+    '<div class="head-ta">கடல் வெப்பநிலை உயர்ந்ததே முக்கிய காரணம்</div>'+
+    '<div class="head-en">Main driver: the sea is 1.8 °C warmer than normal.</div>'+
+    '<div class="claims" style="font-size:13px">Your co-op\'s oil sardine catch is down 46% on Sep 2025.'+c(['E5'])+'</div>'+
+    '<div class="eyebrow" style="margin-bottom:-2px">Ranked causes · share of the decline</div>'+
+    '<div class="chain">'+bars+'</div>'+
+    '<div class="mech">Warm surface layer → weaker upwelling → less plankton → sardine shoals move deeper and further offshore.</div>'+
+    '<div class="meter needs-net">'+
+      '<div class="meter-row"><span>Advisory accuracy, this week</span><b class="acc">'+state.accuracy+'%</b></div>'+
+      '<div class="meter-bar"><i class="accbar" style="width:'+state.accuracy+'%"></i></div>'+
+      '<div class="logrow"><span>Today: oil sardine · 42 kg · PFZ-2</span>'+
+        '<button class="btn logbtn'+(logged?' done':'')+'" type="button"'+(logged?' disabled':'')+'>'+(logged?'Logged ✓':'Log my catch')+'</button></div>'+
+      '<div class="cap"'+(logged?'':' hidden')+'>Your report improved this week\'s forecast score.</div>'+
+    '</div>'+
+    '<div class="netnote">Catch logging needs signal. It will be available when you are back in range.</div>'+
+    '<div class="src">source: MOSDAC SST, Oceansat-3 OCM, ASCAT winds, co-op catch logs — simulated</div>'};
+  }
+
+  if (qid==='refuse') return {cls:'refuse', html:
+    '<div class="ans-top"><span class="chip refuse">WITHHELD</span>verifier blocked the answer</div>'+
+    '<div class="head-ta">போதுமான தரவு இல்லை — இதை நம்ப வேண்டாம்</div>'+
+    '<div class="head-en">Insufficient data — do not rely on this.</div>'+
+    '<div style="font-size:12.5px">The verifier could not re-derive a fish-zone claim for Kodiyakarai. What was missing:</div>'+
+    '<ul class="miss">'+
+      '<li><span class="x">✕</span><span><b>Chlorophyll-a</b> (Oceansat-3 OCM): no valid pixels under 92% cloud. Last clear pass 23 Sep, 6 days old; the limit is 72 h.'+c(['E1','E4'])+'</span></li>'+
+      '<li><span class="x">✕</span><span><b>INCOIS PFZ advisory</b>: not issued for this sector today.'+c(['E3'])+'</span></li>'+
+      '<li><span class="y">✓</span><span>Sea temperature is available (29.0 °C), but temperature alone cannot mark a fishing zone.'+c(['E2'])+'</span></li>'+
+    '</ul>'+
+    '<div class="note">This answer unlocks with the next clear satellite pass (expected 30 Sep, about 10:35) or the next PFZ advisory. Meanwhile, PFZ-2 near you has verified data: <button class="linkbtn askbtn" type="button" data-q="fish">ask “Where will fish be today?”</button></div>'+
+    '<div class="src">Withholding is designed behaviour: the assistant does not guess when an input is missing or stale.</div>'};
+}
+
+/* ---------- chat flow ---------- */
+const chat = $('#chat');
+function el(html){ const t=document.createElement('template'); t.innerHTML=html.trim(); return t.content.firstChild; }
+function scrollChat(){ chat.scrollTop = chat.scrollHeight; }
+
+function renderChips(){
+  $('#chips').innerHTML = ORDER.map(k=>{
+    const q=Q[k];
+    return '<button class="qchip'+(q.net?' net':'')+'" type="button" data-q="'+k+'"><span class="ta">'+q.ta+'</span><span class="en">'+q.en+'</span><span class="tag">needs signal</span></button>';
+  }).join('');
+  syncChips();
+}
+function syncChips(){
+  document.querySelectorAll('.qchip').forEach(b=>{
+    const q=Q[b.dataset.q];
+    b.disabled = state.busy || (state.offline && q.net);
+  });
+}
+
+function traceHTML(qid, agents){
+  const n = agents.filter(a=>a.mode!=='off').length;
+  return '<div class="trace">'+
+    '<div class="trace-h"><svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><circle cx="7" cy="7" r="5.5" fill="none" stroke="var(--teal)" stroke-width="1.4"/><circle cx="7" cy="7" r="2" fill="var(--teal)"/></svg>'+
+    '<span class="t"><b>Orchestrator</b> · <span class="tsum">routing to '+n+' agent'+(n>1?'s':'')+' in parallel…</span></span>'+
+    '<button class="tbtn skip" type="button">Skip</button><button class="tbtn tog" type="button" hidden>Show trace</button></div>'+
+    '<ol class="agents">'+agents.map((a,i)=>
+      '<li class="agent '+(a.mode==='off'?'off':'run')+'" data-i="'+i+'"><span class="st"></span>'+
+      '<span class="nm">'+a.name+(a.note?'<small>'+a.note+'</small>':'')+'</span>'+
+      '<span class="cl">'+(a.mode==='off'?'Skipped: runs on shore servers':'working…')+'</span>'+
+      '<span class="vl">'+(a.mode==='off'?'—':'')+'</span></li>').join('')+'</ol>'+
+    '<div class="verifier run"><svg class="vi" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1.5 L14 4 V8 C14 11.3 11.4 13.8 8 14.8 C4.6 13.8 2 11.3 2 8 V4 Z" fill="none" stroke="currentColor" stroke-width="1.3"/></svg><span class="vt">Verifier waiting for agent claims…</span></div>'+
+  '</div>';
+}
+
+function ask(qid, instant){
+  if (state.busy) return;
+  if (state.offline && Q[qid].net) return;
+  const mid = 'm'+(++seq), q = Q[qid], d = drift(), offline = state.offline;
+  msgs[mid] = {qid, offline};
+  chat.appendChild(el('<div class="bubble"><span class="ta">'+q.ta+'</span><span class="en">'+q.en+'</span></div>'));
+  const agents = agentsFor(qid, d);
+  const tr = el(traceHTML(qid, agents));
+  chat.appendChild(tr);
+  scrollChat();
+  const v = VERIFY[qid];
+  const t0 = performance.now();
+
+  const resolveAgent = i => {
+    const a = agents[i]; if (a.mode==='off') return;
+    const li = tr.querySelector('.agent[data-i="'+i+'"]');
+    if (!li.classList.contains('run')) return;
+    li.className = 'agent '+(a.warn?'warn':'done');
+    li.querySelector('.cl').textContent = a.claim;
+    li.querySelector('.vl').textContent = a.vals;
+  };
+  const verify = () => {
+    const vb = tr.querySelector('.verifier');
+    vb.className = 'verifier '+(v.ok?'pass':'fail');
+    vb.querySelector('.vt').textContent = (v.ok?'Verifier: ':'Verifier refused: ')+v.text+(offline?' · packet signature ✓':'');
+  };
+  const finish = () => {
+    timers.forEach(clearTimeout); timers = [];
+    agents.forEach((_,i)=>resolveAgent(i)); verify();
+    const secs = instant ? 1.9 : Math.max(0.2,(performance.now()-t0)/1000);
+    const n = agents.filter(a=>a.mode!=='off').length;
+    tr.querySelector('.tsum').textContent = n+' agents · '+(v.ok?'verifier passed '+v.n:'verifier withheld answer')+' · '+secs.toFixed(1)+' s';
+    tr.querySelector('.skip').hidden = true;
+    tr.querySelector('.tog').hidden = false;
+    tr.classList.add('collapsed');
+    const a = answerHTML(qid, mid, offline);
+    const card = el('<div class="ans '+a.cls+'" data-mid="'+mid+'">'+a.html+'</div>');
+    chat.appendChild(card);
+    state.busy = false; finishFn = null; syncChips();
+    updateLive(drift(), false);
+    setActive(mid);
+    hlRows = []; renderLedger();
+    requestAnimationFrame(scrollChat);
+  };
+
+  if (instant || reduce){ finish(); return; }
+  state.busy = true; finishFn = finish; syncChips();
+  const delays = [560, 880, 1180, 740];
+  agents.forEach((a,i)=>timers.push(setTimeout(()=>resolveAgent(i), delays[i])));
+  timers.push(setTimeout(()=>{ tr.querySelector('.vt').textContent = 'Verifier re-deriving each claim from cited data…'; }, 1250));
+  timers.push(setTimeout(verify, 1720));
+  timers.push(setTimeout(finish, 2050));
+}
+
+function setActive(mid){
+  state.active = mid;
+  document.querySelectorAll('.ans').forEach(a=>a.classList.toggle('active', a.dataset.mid===mid));
+  const qid = msgs[mid].qid;
+  $('#map').setAttribute('class', 'q-'+qid);
+  renderLedger();
+}
+
+chat.addEventListener('click', e=>{
+  const c = e.target.closest('.cite');
+  if (c){
+    hlRows = c.dataset.rows.split(' ');
+    setActive(c.dataset.msg);
+    const first = document.querySelector('#ledger tr.hl');
+    if (first && window.innerWidth < 960) first.scrollIntoView({block:'center', behavior: reduce?'auto':'smooth'});
+    return;
+  }
+  if (e.target.closest('.skip')){ if (finishFn) finishFn(); return; }
+  const tg = e.target.closest('.tog');
+  if (tg){ const tr=tg.closest('.trace'); tr.classList.toggle('collapsed'); tg.textContent = tr.classList.contains('collapsed')?'Show trace':'Hide trace'; return; }
+  const ab = e.target.closest('.askbtn');
+  if (ab && !ab.disabled){ ask(ab.dataset.q); return; }
+  const lb = e.target.closest('.logbtn');
+  if (lb && !state.logged && !state.offline) logCatch(lb);
+});
+
+function logCatch(){
+  state.logged = true;
+  const from = state.accuracy, to = 73; state.accuracy = to;
+  document.querySelectorAll('.logbtn').forEach(b=>{ b.textContent='Logged ✓'; b.classList.add('done'); b.disabled=true; });
+  document.querySelectorAll('.accbar').forEach(b=>b.style.width = to+'%');
+  document.querySelectorAll('.meter .cap').forEach(c=>c.hidden=false);
+  const accs = document.querySelectorAll('.acc');
+  if (reduce){ accs.forEach(a=>a.textContent=to+'%'); return; }
+  let v = from; const iv = setInterval(()=>{ v++; accs.forEach(a=>a.textContent=v+'%'); if (v>=to) clearInterval(iv); }, 420);
+}
+
+$('#chips').addEventListener('click', e=>{
+  const b = e.target.closest('.qchip'); if (b && !b.disabled) ask(b.dataset.q);
+});
+
+/* ---------- controls ---------- */
+$('#cur').addEventListener('input', e=>{ state.cur = +e.target.value; recompute(true); });
+$('#wind').addEventListener('input', e=>{ state.wind = +e.target.value; recompute(true); });
+
+$('#offline').addEventListener('change', e=>{
+  state.offline = e.target.checked;
+  document.body.classList.toggle('offline', state.offline);
+  $('#packet').hidden = !state.offline;
+  $('#offbar').hidden = !state.offline;
+  $('#offlineLbl').textContent = state.offline ? 'Off-grid' : 'Signal on';
+  $('#sigText').textContent = state.offline ? 'No signal · packet mode' : 'GEMINI · GAGAN link';
+  $('#presetHint').textContent = state.offline ? '3 work off-grid' : '5 presets';
+  document.querySelectorAll('.askbtn').forEach(b=>b.disabled = state.offline);
+  syncChips();
+});
+
+const themeBtn = $('#themeBtn');
+function effTheme(){
+  const t = document.documentElement.getAttribute('data-theme');
+  if (t) return t;
+  return matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+}
+function syncThemeBtn(){ themeBtn.textContent = effTheme()==='dark' ? 'Light theme' : 'Dark theme'; }
+themeBtn.addEventListener('click', ()=>{
+  document.documentElement.setAttribute('data-theme', effTheme()==='dark' ? 'light' : 'dark');
+  syncThemeBtn();
+});
+syncThemeBtn();
+
+/* ---------- boot: open with one answered question ---------- */
+chat.appendChild(el('<div class="sysline">Paired with GEMINI unit · Tamil · 06:40</div>'));
+renderChips();
+recompute(false);
+ask('border', true);
+})();
+</script>
+
+</body>
+</html>

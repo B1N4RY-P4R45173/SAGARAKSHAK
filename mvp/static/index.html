@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SAGARAKSHAK MVP</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Cpath d=%27M4 18h24l-4 7H8z%27 fill=%27%23f1b440%27/%3E%3Cpath d=%27M15 4v14M15 5l8 11h-8%27 fill=%27%2335d6c4%27/%3E%3C/svg%3E">
+<meta name="description" content="Agentic marine-intelligence assistant for Indian fishers — MVP demo. Runs on sample data.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&family=Noto+Sans+Tamil:wght@400;600&display=swap">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" integrity="sha384-c6Rcwz4e4CITMbu/NBmnNS8yN2sC3cUElMEMfP3vqqKFp7GOYaaBBCqmaWBjmkjb" crossorigin="anonymous" referrerpolicy="no-referrer">
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<header class="top">
+  <div class="brand">
+    <h1>SAGARAKSHAK</h1>
+    <span class="sub">Ocean advice a fisher can ask, check, and answer back</span>
+  </div>
+  <span class="badge" id="dataBadge" title="All ocean and weather fields are generated sample data, shaped like the real products they stand in for.">SAMPLE DATA</span>
+  <label class="ctl">Language
+    <select class="ghost" id="lang" aria-label="Question language">
+      <option value="en">English</option>
+      <option value="ta">தமிழ்</option>
+      <option value="te">తెలుగు</option>
+    </select>
+  </label>
+  <label class="switch ctl" title="Make the fishing-zone agent cite a chlorophyll value the satellite never recorded">
+    <input type="checkbox" id="fault"><span class="track"></span><span>Inject agent fault</span>
+  </label>
+  <label class="switch ctl" title="Simulate losing mobile signal at sea">
+    <input type="checkbox" id="offline"><span class="track"></span><span id="offLbl">Signal on</span>
+  </label>
+  <button class="ghost" id="themeBtn" type="button">Theme</button>
+</header>
+
+<main class="app">
+  <!-- phone -->
+  <section class="phone" aria-label="Fisher's phone" id="phone">
+    <div class="screen">
+      <div class="status"><span class="sig"><i></i><span id="sigText">4G · online</span></span><span id="clock" class="num">--:--</span></div>
+      <div class="offbanner" id="offBanner" hidden>
+        <div><b>No signal.</b> <span id="offText">Running on the signed safety packet.</span></div>
+        <div class="row">
+          <button class="btn warn" id="simBtn" type="button">Simulate engine failure</button>
+          <button class="btn alt" id="tamperBtn" type="button">Tamper with packet</button>
+        </div>
+      </div>
+      <div class="chat" id="chat" aria-live="polite"></div>
+      <div class="presets">
+        <div class="eyebrow"><span>Try asking</span><span id="voiceState" title="Which voice reads answers aloud">Voice: …</span></div>
+        <div class="chips" id="chips"></div>
+      </div>
+      <div class="listen" id="listenBar" hidden aria-live="polite"></div>
+      <form class="composer" id="composer">
+        <button class="round" type="button" id="micBtn" aria-label="Speak your question" title="Tap and speak (shortcut: M)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
+        </button>
+        <input id="q" autocomplete="off" placeholder="Ask about fish, weather, the border…" aria-label="Your question">
+        <button class="round primary" type="submit" aria-label="Send">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </button>
+      </form>
+    </div>
+  </section>
+
+  <!-- map -->
+  <section class="card mapcard" aria-label="Chart">
+    <div class="card-h">
+      <h2>Chart · Palk Bay &amp; Gulf of Mannar</h2>
+      <span class="aux">Drag the boat to move it</span>
+    </div>
+    <div id="map"></div>
+    <div class="readout" id="readout" hidden></div>
+    <div class="keys">
+      <span><i style="border-color:var(--coral);border-top-style:dashed"></i>IMBL (sea border)</span>
+      <span><i style="border-color:var(--teal)"></i>Advised fishing zone</span>
+      <span><i style="border-color:var(--amber)"></i>Drift cone, 8 h</span>
+      <span><i style="border-color:var(--violet);border-top-style:dotted"></i>Withheld by verifier</span>
+    </div>
+    <div class="legend" id="legend" hidden></div>
+    <div class="maptools">
+      <span>Layer</span>
+      <div class="seg" id="layerSeg" role="group" aria-label="Map layer">
+        <button type="button" data-f="none" aria-pressed="false">None</button>
+        <button type="button" data-f="sst" aria-pressed="true">SST</button>
+        <button type="button" data-f="chl" aria-pressed="false">Chlorophyll</button>
+        <button type="button" data-f="hs" aria-pressed="false">Waves</button>
+        <button type="button" data-f="ts" aria-pressed="false">Storm</button>
+      </div>
+      <label class="switch"><input type="checkbox" id="curToggle" checked><span class="track"></span>Currents</label>
+      <label class="switch"><input type="checkbox" id="repToggle"><span class="track"></span>Catch reports</label>
+      <div class="tslider"><span>Time</span><input type="range" id="tSlider" min="0" max="16" value="0" aria-label="Forecast time"><span class="num" id="tLbl">+0 h</span></div>
+    </div>
+  </section>
+
+  <!-- side panel -->
+  <section class="card side" aria-label="Inspection panel">
+    <div class="tabs" role="tablist">
+      <button role="tab" aria-selected="true" data-tab="evidence">Evidence<span class="count" id="evCount"></span></button>
+      <button role="tab" aria-selected="false" data-tab="agents">Agents</button>
+      <button role="tab" aria-selected="false" data-tab="loop">Loop</button>
+      <button role="tab" aria-selected="false" data-tab="packet">Packet</button>
+    </div>
+    <div class="pane" id="pane-evidence" role="tabpanel"><div class="empty">Ask a question. Every number in the answer shows up here with the satellite cells it came from, and what the verifier did to check it.</div></div>
+    <div class="pane" id="pane-agents" role="tabpanel" hidden><div class="empty">The orchestrator's plan for your last question will appear here.</div></div>
+    <div class="pane" id="pane-loop" role="tabpanel" hidden></div>
+    <div class="pane" id="pane-packet" role="tabpanel" hidden></div>
+  </section>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js" integrity="sha384-NElt3Op+9NBMCYaef5HxeJmU4Xeard/Lku8ek6hoPTvYkQPh3zLIrJP7KiRocsxO" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="/app.js"></script>
+</body>
+</html>
